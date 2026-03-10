@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BBR Admin — Upload Data</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #00233C;
+            --blue: #0586FF;
+            --blue-dim: rgba(5,134,255,0.15);
+            --gold: #FFD966;
+            --white: #FFFFFF;
+            --white-60: rgba(255,255,255,0.6);
+            --white-30: rgba(255,255,255,0.3);
+            --white-10: rgba(255,255,255,0.1);
+            --white-05: rgba(255,255,255,0.05);
+            --success: #34D399;
+            --red: #FF6B6B;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: var(--navy);
+            color: var(--white);
+            min-height: 100vh;
+        }
+        .nav {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 32px;
+            border-bottom: 1px solid var(--white-10);
+            background: rgba(0,35,60,0.85);
+            backdrop-filter: blur(20px);
+        }
+        .nav-brand h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22px; letter-spacing: 1.5px;
+        }
+        .nav-brand h1 span { color: var(--gold); }
+        .nav-brand .badge {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 11px; letter-spacing: 2px; color: var(--blue);
+            text-transform: uppercase;
+        }
+        .btn-sm {
+            font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
+            padding: 8px 16px; border-radius: 8px; text-decoration: none;
+            border: none; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-outline {
+            background: transparent; color: var(--white-60);
+            border: 1px solid var(--white-10);
+        }
+        .btn-outline:hover { border-color: var(--white-30); color: var(--white); }
+
+        .main {
+            max-width: 640px; margin: 0 auto; padding: 48px 32px;
+        }
+        .page-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px; letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+        .page-subtitle {
+            font-size: 14px; color: var(--white-60); margin-bottom: 32px;
+        }
+
+        .flash-msg {
+            border-radius: 12px; padding: 14px 18px; margin-bottom: 20px;
+            font-size: 13px; font-weight: 500;
+        }
+        .flash-success {
+            background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.25);
+            color: var(--success);
+        }
+        .flash-error {
+            background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.25);
+            color: var(--red);
+        }
+
+        .upload-card {
+            background: var(--white-05); border: 1px solid var(--white-10);
+            border-radius: 20px; padding: 36px; text-align: center;
+        }
+        .drop-zone {
+            border: 2px dashed var(--white-10); border-radius: 16px;
+            padding: 48px 24px; margin-bottom: 24px;
+            transition: all 0.2s; cursor: pointer;
+        }
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: var(--blue); background: var(--blue-dim);
+        }
+        .drop-zone .icon { font-size: 40px; margin-bottom: 12px; }
+        .drop-zone h4 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+        .drop-zone p { font-size: 13px; color: var(--white-60); }
+        .drop-zone .filename {
+            margin-top: 12px; font-size: 14px; font-weight: 600; color: var(--blue);
+            display: none;
+        }
+
+        .file-input { display: none; }
+
+        .btn-upload {
+            font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700;
+            padding: 14px 40px; border-radius: 12px; border: none;
+            background: var(--blue); color: var(--white); cursor: pointer;
+            transition: all 0.2s; width: 100%;
+        }
+        .btn-upload:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-upload:disabled {
+            opacity: 0.4; cursor: not-allowed; transform: none;
+        }
+
+        .last-updated {
+            margin-top: 20px; font-size: 12px; color: var(--white-30);
+        }
+        .last-updated span { color: var(--gold); }
+
+        .nav-links { display: flex; gap: 12px; }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-brand">
+            <div class="badge">Admin Panel</div>
+            <h1>BLISS BATTLE <span>ROYALE</span></h1>
+        </div>
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard') }}" class="btn-sm btn-outline">&larr; Dashboard</a>
+            <a href="{{ url_for('logout') }}" class="btn-sm btn-outline">Logout</a>
+        </div>
+    </nav>
+
+    <div class="main">
+        <h2 class="page-title">UPLOAD DATA</h2>
+        <p class="page-subtitle">Upload the Bliss Battle Royale Excel file to update the dashboard.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash-msg flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <div class="upload-card">
+            <form id="uploadForm" action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+                <div class="drop-zone" id="dropZone">
+                    <div class="icon">📁</div>
+                    <h4>Drop your Excel file here</h4>
+                    <p>or click to browse (.xlsx files only)</p>
+                    <div class="filename" id="fileName"></div>
+                </div>
+                <input type="file" name="file" id="fileInput" class="file-input" accept=".xlsx,.xls">
+                <button type="submit" class="btn-upload" id="uploadBtn" disabled>Upload & Process</button>
+            </form>
+
+            {% if last_updated %}
+            <p class="last-updated">Last updated: <span>{{ last_updated }}</span></p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileName = document.getElementById('fileName');
+        const uploadBtn = document.getElementById('uploadBtn');
+
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                updateFileName();
+            }
+        });
+
+        fileInput.addEventListener('change', updateFileName);
+
+        function updateFileName() {
+            if (fileInput.files.length) {
+                fileName.textContent = fileInput.files[0].name;
+                fileName.style.display = 'block';
+                uploadBtn.disabled = false;
+            }
+        }
+
+        document.getElementById('uploadForm').addEventListener('submit', function() {
+            uploadBtn.textContent = 'Processing...';
+            uploadBtn.disabled = true;
+        });
+    </script>
+</body>
+</html>
