@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #00233C;
+  --color-navy-light: #003157;
+  --color-brand-blue: #0586FF;
+  --color-brand-gold: #FFD966;
+  --color-success: #34D399;
+  --color-danger: #FF6B6B;
+  --color-purple: #C084FC;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--color-navy);
+  color: #fff;
+  min-height: 100vh;
+}
+
+/* Glassmorphism card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+}
+
+/* Points bar */
+.points-bar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.points-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 1s ease;
+}
+
+/* Team badges */
+.badge-titans {
+  background: rgba(5, 134, 255, 0.15);
+  color: #0586FF;
+}
+.badge-stalwarts {
+  background: rgba(52, 211, 153, 0.15);
+  color: #34D399;
+}
+.badge-underrated {
+  background: rgba(192, 132, 252, 0.15);
+  color: #C084FC;
+}
+
+/* History table */
+.history-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 4px;
+}
+.history-table th {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: left;
+  padding: 8px 16px;
+}
+.history-table td {
+  padding: 14px 16px;
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.05);
+}
+.history-table tr td:first-child {
+  border-radius: 10px 0 0 10px;
+}
+.history-table tr td:last-child {
+  border-radius: 0 10px 10px 0;
+}

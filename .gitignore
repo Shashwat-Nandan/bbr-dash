@@ -1,5 +1,20 @@
+# Python (legacy)
 __pycache__/
 *.pyc
+
+# OS
 .DS_Store
+
+# Environment
 .env
+.env.local
+.env*.local
+
+# Next.js
+.next/
+out/
+node_modules/
+
+# Data (runtime storage)
+data/
 uploads/
