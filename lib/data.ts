@@ -22,6 +22,7 @@ export async function saveData(data: DashboardData): Promise<void> {
   await put(BLOB_FILENAME, json, {
     access: "public",
     addRandomSuffix: false,
+    allowOverwrite: true,
     contentType: "application/json",
   });
 }
