@@ -29,39 +29,34 @@ export default function PotdHistory({ history }: PotdHistoryProps) {
     <div className="flex flex-col gap-2">
       {history.map((p, i) => {
         const premiumFormatted = p.premiums.toLocaleString("en-IN", { maximumFractionDigits: 0 });
+        const isNumeric = /^\d+$/.test(p.winner);
+        const displayName = isNumeric ? `Advisor #${p.winner}` : p.winner;
+
         return (
           <div
             key={i}
-            className="history-card flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5"
-            style={{ borderLeftWidth: 3, borderLeftColor: getTeamColor(p.team) }}
+            className="history-row px-4 sm:px-5 py-3.5 flex items-center gap-3 sm:gap-4"
+            style={{ borderLeft: `3px solid ${getTeamColor(p.team)}` }}
           >
-            {/* Rank circle */}
-            <div className="flex-shrink-0 w-7 h-7 rounded-full bg-white/[0.04] border border-white/[0.06] flex items-center justify-center">
-              <span className="text-[11px] font-bold text-white/30">{i + 1}</span>
-            </div>
-
             {/* Date */}
-            <div className="flex-shrink-0 hidden sm:block w-[80px]">
-              <span className="text-[12px] text-white/30 font-medium">{p.date}</span>
+            <div className="flex-shrink-0 w-[85px]">
+              <span className="text-[12px] text-white/35 font-medium">{p.date}</span>
             </div>
 
-            {/* Name + Team */}
-            <div className="flex-1 min-w-0 flex items-center gap-2.5">
-              <span className="font-semibold text-[14px] truncate">{p.winner}</span>
-              <span
-                className={`flex-shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-md uppercase tracking-wide ${getBadgeClass(p.team)}`}
-              >
+            {/* Name */}
+            <div className="flex-1 min-w-0">
+              <span className="font-semibold text-[14px] text-white/90">{displayName}</span>
+            </div>
+
+            {/* Team badge */}
+            <div className="flex-shrink-0">
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wide ${getBadgeClass(p.team)}`}>
                 {p.team}
               </span>
             </div>
 
-            {/* Date on mobile */}
-            <div className="flex-shrink-0 sm:hidden">
-              <span className="text-[11px] text-white/25">{p.date}</span>
-            </div>
-
             {/* Premium */}
-            <div className="flex-shrink-0 text-right">
+            <div className="flex-shrink-0 w-[90px] text-right">
               <span className="font-bold text-brand-gold text-[14px]">
                 &#8377;{premiumFormatted}
               </span>

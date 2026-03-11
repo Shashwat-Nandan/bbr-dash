@@ -1,13 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy: #00233C;
-  --color-navy-light: #003157;
+  --color-navy: #001829;
+  --color-navy-light: #002844;
+  --color-navy-card: #011E33;
   --color-brand-blue: #0586FF;
   --color-brand-gold: #FFD966;
   --color-success: #34D399;
   --color-danger: #FF6B6B;
   --color-purple: #C084FC;
+  --color-titans: #0586FF;
+  --color-stalwarts: #34D399;
+  --color-underrated: #C084FC;
 }
 
 * {
@@ -23,140 +27,157 @@ body {
 }
 
 /* Scrollbar */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.15); }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-navy); }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
-/* ─── Glass card ─── */
-.glass-card {
-  background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 20px;
-  backdrop-filter: blur(24px);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+/* ═══ TEAM CARD ═══ */
+.team-card {
+  background: linear-gradient(168deg, #02243D 0%, #011A2E 100%);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px;
+  position: relative;
+  transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1),
+              box-shadow 0.35s ease,
+              border-color 0.35s ease;
 }
-.glass-card:hover {
-  border-color: rgba(255,255,255,0.14);
-  box-shadow: 0 8px 40px rgba(0,0,0,0.2);
-}
-
-/* ─── Rank 1 gold glow ─── */
-.card-glow-gold {
-  box-shadow:
-    0 0 40px rgba(255,217,102,0.07),
-    0 0 80px rgba(255,217,102,0.03),
-    inset 0 1px 0 rgba(255,217,102,0.1);
-}
-.card-glow-gold:hover {
-  box-shadow:
-    0 0 50px rgba(255,217,102,0.12),
-    0 0 100px rgba(255,217,102,0.05),
-    inset 0 1px 0 rgba(255,217,102,0.15);
+.team-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255,255,255,0.15);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4);
 }
 
-/* ─── Points bar ─── */
+/* Rank 1 champion card */
+.team-card-champion {
+  background: linear-gradient(168deg, #0C2A1F 0%, #011A2E 60%);
+  border-color: rgba(255,217,102,0.25);
+  box-shadow: 0 0 60px rgba(255,217,102,0.06),
+              0 0 120px rgba(255,217,102,0.03);
+}
+.team-card-champion:hover {
+  border-color: rgba(255,217,102,0.4);
+  box-shadow: 0 0 60px rgba(255,217,102,0.1),
+              0 16px 48px rgba(0,0,0,0.4);
+}
+
+/* ═══ POINTS BAR ═══ */
 .points-bar {
-  height: 6px;
-  background: rgba(255,255,255,0.06);
-  border-radius: 6px;
+  height: 7px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px;
   overflow: hidden;
 }
 .points-bar-fill {
   height: 100%;
-  border-radius: 6px;
-  transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
-}
-.points-bar-fill::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
-  border-radius: inherit;
+  border-radius: 10px;
+  transition: width 1.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ─── Team badges ─── */
+/* ═══ TEAM BADGES ═══ */
 .badge-titans {
-  background: rgba(5,134,255,0.12);
-  color: #0586FF;
-  border: 1px solid rgba(5,134,255,0.15);
+  background: rgba(5,134,255,0.15);
+  color: #3DA2FF;
+  border: 1px solid rgba(5,134,255,0.2);
 }
 .badge-stalwarts {
-  background: rgba(52,211,153,0.12);
-  color: #34D399;
-  border: 1px solid rgba(52,211,153,0.15);
+  background: rgba(52,211,153,0.15);
+  color: #5EEAAD;
+  border: 1px solid rgba(52,211,153,0.2);
 }
 .badge-underrated {
-  background: rgba(192,132,252,0.12);
-  color: #C084FC;
-  border: 1px solid rgba(192,132,252,0.15);
+  background: rgba(192,132,252,0.15);
+  color: #D4A5FF;
+  border: 1px solid rgba(192,132,252,0.2);
 }
 
-/* ─── POTD hero shimmer ─── */
-@keyframes shimmer-slide {
-  0% { transform: translateX(-100%) skewX(-15deg); }
-  100% { transform: translateX(200%) skewX(-15deg); }
+/* ═══ POTD HERO ═══ */
+.potd-hero {
+  background: linear-gradient(135deg, #1A1040 0%, #0D1F3C 40%, #011A2E 100%);
+  border: 1px solid rgba(192,132,252,0.2);
+  border-radius: 20px;
+  position: relative;
 }
-.potd-shimmer::before {
+
+@keyframes shimmer-sweep {
+  0% { left: -40%; }
+  100% { left: 140%; }
+}
+.potd-hero::after {
   content: '';
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(192,132,252,0.06) 35%,
-    rgba(5,134,255,0.08) 50%,
-    rgba(192,132,252,0.06) 65%,
-    transparent 100%
-  );
-  animation: shimmer-slide 5s ease-in-out infinite;
+  top: 0;
+  bottom: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(192,132,252,0.04), rgba(5,134,255,0.04), transparent);
+  animation: shimmer-sweep 6s ease-in-out infinite;
+  pointer-events: none;
 }
 
-/* ─── Floating orb animation ─── */
-@keyframes float-slow {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30px, -20px) scale(1.05); }
-  66% { transform: translate(-20px, 15px) scale(0.95); }
+/* ═══ HISTORY ROW ═══ */
+.history-row {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 14px;
+  transition: all 0.25s ease;
 }
-@keyframes float-slower {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(-25px, 25px) scale(1.03); }
-  66% { transform: translate(20px, -10px) scale(0.97); }
-}
-.orb-1 { animation: float-slow 12s ease-in-out infinite; }
-.orb-2 { animation: float-slower 15s ease-in-out infinite; }
-.orb-3 { animation: float-slow 18s ease-in-out infinite reverse; }
-
-/* ─── Pulse ring for login ─── */
-@keyframes pulse-ring {
-  0% { transform: scale(0.9); opacity: 0.5; }
-  50% { transform: scale(1.1); opacity: 0.2; }
-  100% { transform: scale(0.9); opacity: 0.5; }
+.history-row:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.08);
 }
 
-/* ─── Fade in up for page load ─── */
-@keyframes fade-in-up {
-  0% { opacity: 0; transform: translateY(16px); }
-  100% { opacity: 1; transform: translateY(0); }
+/* ═══ LOGIN ═══ */
+@keyframes orb-drift-1 {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(60px, -40px); }
+  50% { transform: translate(-30px, 30px); }
+  75% { transform: translate(40px, 60px); }
 }
-.animate-fade-in-up {
-  animation: fade-in-up 0.6s ease-out forwards;
+@keyframes orb-drift-2 {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-50px, 50px); }
+  50% { transform: translate(40px, -30px); }
+  75% { transform: translate(-30px, -50px); }
 }
-.animate-delay-1 { animation-delay: 0.1s; opacity: 0; }
-.animate-delay-2 { animation-delay: 0.2s; opacity: 0; }
-.animate-delay-3 { animation-delay: 0.3s; opacity: 0; }
-.animate-delay-4 { animation-delay: 0.4s; opacity: 0; }
+.login-orb-1 { animation: orb-drift-1 20s ease-in-out infinite; }
+.login-orb-2 { animation: orb-drift-2 25s ease-in-out infinite; }
 
-/* ─── History card ─── */
-.history-card {
-  background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.005) 100%);
-  border: 1px solid rgba(255,255,255,0.05);
+.login-card {
+  background: linear-gradient(175deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 24px;
+  backdrop-filter: blur(40px);
+}
+
+.login-btn {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F0F0F0 100%);
+  color: #1a1a1a;
   border-radius: 16px;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
 }
-.history-card:hover {
-  background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
-  border-color: rgba(255,255,255,0.1);
-  transform: translateX(4px);
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(5,134,255,0.2),
+              0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* ═══ STAT PILL ═══ */
+.stat-pill {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 12px 16px;
+}
+
+/* ═══ SECTION LABEL ═══ */
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 100px;
 }

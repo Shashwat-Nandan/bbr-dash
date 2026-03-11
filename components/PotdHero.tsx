@@ -4,15 +4,6 @@ interface PotdHeroProps {
   potd: PotdEntry;
 }
 
-function getTeamAccent(team: string): string {
-  switch (team.toLowerCase()) {
-    case "titans": return "#0586FF";
-    case "stalwarts": return "#34D399";
-    case "underrated": return "#C084FC";
-    default: return "#0586FF";
-  }
-}
-
 function getBadgeClass(team: string): string {
   switch (team.toLowerCase()) {
     case "titans": return "badge-titans";
@@ -25,48 +16,51 @@ function getBadgeClass(team: string): string {
 export default function PotdHero({ potd }: PotdHeroProps) {
   const premiumK = Math.round(potd.premiums / 1000);
   const premiumFormatted = potd.premiums.toLocaleString("en-IN", { maximumFractionDigits: 0 });
-  const teamColor = getTeamAccent(potd.team);
+
+  // If winner looks like a numeric ID, display it differently
+  const isNumericWinner = /^\d+$/.test(potd.winner);
+  const displayName = isNumericWinner ? `Advisor #${potd.winner}` : potd.winner;
 
   return (
-    <div className="potd-shimmer relative overflow-hidden rounded-[22px] border border-purple-500/20 bg-gradient-to-br from-purple-500/[0.08] via-transparent to-brand-blue/[0.06]">
-      {/* Top gradient line */}
-      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#9B59B6] via-purple to-brand-blue" />
+    <div className="potd-hero overflow-hidden">
+      {/* Top gradient bar */}
+      <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#9B59B6] via-[#C084FC] to-[#0586FF]" />
 
-      <div className="relative p-8 sm:p-10 flex items-center justify-between gap-8 max-md:flex-col max-md:text-center">
-        {/* Left — Winner info */}
+      <div className="relative z-10 p-7 sm:p-9 flex items-center justify-between gap-8 max-md:flex-col max-md:text-center">
+        {/* Left: Winner */}
         <div className="flex-1 min-w-0">
-          <div className="inline-flex items-center gap-2 text-[11px] font-bold tracking-[2px] uppercase bg-purple/10 border border-purple/15 px-3.5 py-1.5 rounded-full mb-4">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" className="text-brand-gold">
+          {/* Badge */}
+          <div className="section-badge bg-purple/10 border border-purple/20 text-purple mb-5">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-brand-gold">
               <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5z" fill="currentColor"/>
               <path d="M19 19H5a1 1 0 0 1 0-2h14a1 1 0 0 1 0 2z" fill="currentColor" opacity="0.5"/>
             </svg>
-            <span className="text-purple">Purple Cap Holder</span>
+            Purple Cap Holder
           </div>
 
-          <div className="font-[family-name:var(--font-bebas)] text-[44px] sm:text-[48px] tracking-[2px] leading-[0.95]">
-            {potd.winner.toUpperCase()}
-          </div>
+          {/* Name */}
+          <h2 className="font-[family-name:var(--font-bebas)] text-[42px] sm:text-[52px] tracking-[2px] leading-[0.9] mb-3">
+            {displayName.toUpperCase()}
+          </h2>
 
-          <div className="mt-3 flex items-center gap-3 flex-wrap max-md:justify-center">
-            <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg uppercase tracking-wide ${getBadgeClass(potd.team)}`}>
+          {/* Team + Date */}
+          <div className="flex items-center gap-3 flex-wrap max-md:justify-center">
+            <span className={`text-[11px] font-bold px-3 py-1 rounded-lg uppercase tracking-wider ${getBadgeClass(potd.team)}`}>
               {potd.team}
             </span>
-            <span className="text-[13px] text-white/30">
-              ID: <span className="text-white/50 font-medium">{potd.tact_id}</span>
-            </span>
+            <span className="text-[13px] text-white/30">{potd.date}</span>
           </div>
         </div>
 
-        {/* Right — Premium */}
+        {/* Right: Premium */}
         <div className="flex-shrink-0 text-right max-md:text-center">
-          <div className="text-[12px] text-white/30 uppercase tracking-wider mb-1">{potd.date}</div>
-          <div className="font-[family-name:var(--font-bebas)] text-[56px] sm:text-[64px] leading-none" style={{ color: teamColor }}>
+          <div className="font-[family-name:var(--font-bebas)] text-[60px] sm:text-[72px] leading-none text-brand-gold">
             &#8377;{premiumK}K
           </div>
-          <div className="text-[13px] text-white/40 font-medium mt-1">
+          <div className="text-[14px] text-white/40 font-medium mt-1">
             &#8377;{premiumFormatted}
           </div>
-          <div className="text-[10px] text-white/20 uppercase tracking-[1.5px] mt-1">
+          <div className="text-[10px] text-white/25 uppercase tracking-[2px] mt-1 font-semibold">
             Premium Collected
           </div>
         </div>
