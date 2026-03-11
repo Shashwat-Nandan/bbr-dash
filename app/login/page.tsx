@@ -6,52 +6,60 @@ export default async function LoginPage() {
   if (session?.user) redirect("/");
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative bg-[#001829]">
-      {/* Large animated orbs */}
-      <div className="login-orb-1 fixed w-[700px] h-[700px] rounded-full blur-[180px] pointer-events-none -top-[200px] -left-[150px] bg-[#0586FF] opacity-[0.12]" />
-      <div className="login-orb-2 fixed w-[600px] h-[600px] rounded-full blur-[160px] pointer-events-none -bottom-[100px] -right-[100px] bg-[#FFD966] opacity-[0.08]" />
-      <div className="fixed w-[400px] h-[400px] rounded-full blur-[120px] pointer-events-none top-[50%] left-[30%] bg-[#C084FC] opacity-[0.06]" />
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden"
+      style={{ background: "linear-gradient(145deg, #06080F 0%, #0A0E1A 40%, #0F1225 100%)" }}>
 
-      {/* Noise texture overlay */}
-      <div className="fixed inset-0 opacity-[0.02] pointer-events-none"
-        style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")' }}
-      />
+      {/* Orbs */}
+      <div className="fixed w-[600px] h-[600px] rounded-full blur-[160px] pointer-events-none opacity-20 -top-40 -right-40"
+        style={{ background: "#3B82F6", animation: "drift-1 24s ease-in-out infinite" }} />
+      <div className="fixed w-[500px] h-[500px] rounded-full blur-[140px] pointer-events-none opacity-15 -bottom-32 -left-32"
+        style={{ background: "#FBBF24", animation: "drift-2 30s ease-in-out infinite" }} />
+      <div className="fixed w-[350px] h-[350px] rounded-full blur-[120px] pointer-events-none opacity-10 top-1/2 left-1/3"
+        style={{ background: "#A78BFA" }} />
 
       {/* Card */}
-      <div className="relative z-10 w-[90%] max-w-[440px]">
-        <div className="login-card py-16 px-10 sm:px-12 text-center relative overflow-hidden">
-          {/* Top accent */}
-          <div className="absolute top-0 left-[10%] right-[10%] h-[2px] bg-gradient-to-r from-transparent via-brand-blue/40 to-transparent" />
+      <div className="relative z-10 w-[90%] max-w-[460px]">
+        <div
+          className="rounded-3xl p-12 sm:p-14 text-center relative overflow-hidden"
+          style={{
+            background: "linear-gradient(170deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.015) 100%)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            backdropFilter: "blur(40px)",
+          }}
+        >
+          {/* Top accent line */}
+          <div className="absolute top-0 inset-x-0 h-px"
+            style={{ background: "linear-gradient(90deg, transparent 10%, rgba(59,130,246,0.4) 50%, transparent 90%)" }} />
 
-          {/* Logo area */}
-          <div className="mb-8">
-            <div className="inline-flex items-center gap-2.5 mb-5">
-              <div className="w-8 h-8 rounded-lg bg-brand-blue/20 border border-brand-blue/25 flex items-center justify-center">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#0586FF"/>
-                </svg>
-              </div>
-              <span className="font-[family-name:var(--font-bebas)] text-[14px] tracking-[3px] text-white/50 uppercase">
-                Ditto Insurance
-              </span>
+          {/* Brand */}
+          <div className="flex items-center justify-center gap-2.5 mb-8">
+            <div
+              className="w-9 h-9 rounded-xl flex items-center justify-center"
+              style={{ background: "rgba(59,130,246,0.15)", border: "1px solid rgba(59,130,246,0.2)" }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#3B82F6" />
+              </svg>
             </div>
-
-            <h1 className="font-[family-name:var(--font-bebas)] text-[56px] sm:text-[64px] tracking-[4px] leading-[0.9]">
-              BLISS BATTLE
-              <br />
-              <span className="bg-gradient-to-r from-[#FFD966] to-[#FFAB40] bg-clip-text text-transparent">
-                ROYALE
-              </span>
-            </h1>
+            <span className="font-[family-name:var(--font-bebas)] text-sm tracking-[3px] text-white/40 uppercase">
+              Ditto Insurance
+            </span>
           </div>
 
-          {/* Separator */}
-          <div className="flex items-center gap-4 justify-center mb-8">
-            <div className="w-12 h-px bg-gradient-to-r from-transparent to-white/15" />
-            <span className="text-[11px] font-bold tracking-[3px] uppercase text-white/25">
+          {/* Title */}
+          <h1 className="font-[family-name:var(--font-bebas)] text-[58px] sm:text-[68px] tracking-[4px] leading-[0.88] mb-3">
+            BLISS BATTLE
+            <br />
+            <span className="text-brand-gold">ROYALE</span>
+          </h1>
+
+          {/* Divider */}
+          <div className="flex items-center justify-center gap-4 my-8">
+            <div className="w-16 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.12))" }} />
+            <span className="text-[11px] font-semibold tracking-[3px] uppercase text-white/20">
               March 2026
             </span>
-            <div className="w-12 h-px bg-gradient-to-l from-transparent to-white/15" />
+            <div className="w-16 h-px" style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.12), transparent)" }} />
           </div>
 
           {/* CTA */}
@@ -61,8 +69,16 @@ export default async function LoginPage() {
               await signIn("google", { redirectTo: "/" });
             }}
           >
-            <button type="submit" className="login-btn w-full max-w-[280px] inline-flex items-center justify-center gap-3 font-semibold text-[15px] px-8 py-4 cursor-pointer">
-              <svg viewBox="0 0 24 24" className="w-[18px] h-[18px] flex-shrink-0">
+            <button
+              type="submit"
+              className="w-full max-w-[300px] inline-flex items-center justify-center gap-3 font-semibold text-[15px] px-8 py-4 rounded-2xl cursor-pointer transition-all duration-300 hover:-translate-y-0.5"
+              style={{
+                background: "linear-gradient(135deg, #fff 0%, #E8E8E8 100%)",
+                color: "#111",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+              }}
+            >
+              <svg viewBox="0 0 24 24" className="w-5 h-5 flex-shrink-0">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
@@ -72,9 +88,8 @@ export default async function LoginPage() {
             </button>
           </form>
 
-          <p className="mt-8 text-[12px] text-white/20">
-            Access restricted to{" "}
-            <span className="text-brand-gold/50 font-semibold">@joinditto.in</span>
+          <p className="mt-10 text-[12px] text-white/18">
+            Restricted to <span className="text-brand-gold/50 font-semibold">@joinditto.in</span> accounts
           </p>
         </div>
       </div>

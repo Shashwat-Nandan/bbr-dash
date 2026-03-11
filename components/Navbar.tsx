@@ -11,55 +11,74 @@ interface NavbarProps {
 
 export default function Navbar({ user }: NavbarProps) {
   return (
-    <nav className="flex items-center justify-between px-5 sm:px-8 py-3 border-b border-white/[0.06] backdrop-blur-xl sticky top-0 z-50 bg-[rgba(0,24,41,0.92)]">
-      <div className="flex items-center gap-2.5">
-        <div className="w-8 h-8 rounded-lg bg-brand-blue/15 border border-brand-blue/20 flex items-center justify-center flex-shrink-0">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#0586FF"/>
-          </svg>
-        </div>
-        <div>
-          <h1 className="font-[family-name:var(--font-bebas)] text-[18px] sm:text-[20px] tracking-[1.5px] leading-none">
+    <nav
+      className="sticky top-0 z-50 backdrop-blur-2xl"
+      style={{
+        background: "rgba(10,14,26,0.88)",
+        borderBottom: "1px solid rgba(255,255,255,0.06)",
+      }}
+    >
+      <div className="max-w-[1320px] mx-auto flex items-center justify-between px-6 sm:px-10 py-4">
+        {/* Left: Brand */}
+        <div className="flex items-center gap-3">
+          <div
+            className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{ background: "rgba(59,130,246,0.12)", border: "1px solid rgba(59,130,246,0.18)" }}
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#3B82F6" />
+            </svg>
+          </div>
+          <h1 className="font-[family-name:var(--font-bebas)] text-[22px] tracking-[2px] leading-none">
             BLISS BATTLE <span className="text-brand-gold">ROYALE</span>
           </h1>
         </div>
-      </div>
 
-      <div className="flex items-center gap-2 sm:gap-3">
-        {user.isAdmin && (
-          <Link
-            href="/admin"
-            className="text-[11px] font-semibold px-3 py-1.5 rounded-lg bg-brand-blue/15 text-brand-blue border border-brand-blue/20 hover:bg-brand-blue/25 transition-colors"
-          >
-            Admin
-          </Link>
-        )}
-
-        <div className="flex items-center gap-2 text-[12px] text-white/40">
-          {user.image && (
-            <img
-              src={user.image}
-              alt=""
-              referrerPolicy="no-referrer"
-              className="w-7 h-7 rounded-full border border-white/10"
-            />
+        {/* Right: Actions */}
+        <div className="flex items-center gap-4">
+          {user.isAdmin && (
+            <Link
+              href="/admin"
+              className="text-[12px] font-semibold px-4 py-2 rounded-xl transition-colors"
+              style={{
+                background: "rgba(59,130,246,0.12)",
+                color: "#60A5FA",
+                border: "1px solid rgba(59,130,246,0.18)",
+              }}
+            >
+              Admin
+            </Link>
           )}
-          <span className="hidden sm:inline max-w-[120px] truncate">{user.name}</span>
-        </div>
 
-        <form
-          action={async () => {
-            "use server";
-            await signOut({ redirectTo: "/login" });
-          }}
-        >
-          <button
-            type="submit"
-            className="text-[11px] font-medium px-3 py-1.5 rounded-lg text-white/30 hover:text-white/50 transition-colors cursor-pointer"
+          <div className="flex items-center gap-2.5">
+            {user.image && (
+              <img
+                src={user.image}
+                alt=""
+                referrerPolicy="no-referrer"
+                className="w-8 h-8 rounded-full"
+                style={{ border: "2px solid rgba(255,255,255,0.08)" }}
+              />
+            )}
+            <span className="hidden sm:block text-[13px] text-white/40 max-w-[140px] truncate">
+              {user.name}
+            </span>
+          </div>
+
+          <form
+            action={async () => {
+              "use server";
+              await signOut({ redirectTo: "/login" });
+            }}
           >
-            Logout
-          </button>
-        </form>
+            <button
+              type="submit"
+              className="text-[12px] font-medium px-3.5 py-2 rounded-xl text-white/25 hover:text-white/50 hover:bg-white/5 transition-all cursor-pointer"
+            >
+              Logout
+            </button>
+          </form>
+        </div>
       </div>
     </nav>
   );

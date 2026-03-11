@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, Inter } from "next/font/google";
+import { Bebas_Neue, Outfit } from "next/font/google";
 import "./globals.css";
 
 const bebasNeue = Bebas_Neue({
@@ -8,9 +8,10 @@ const bebasNeue = Bebas_Neue({
   variable: "--font-bebas",
 });
 
-const inter = Inter({
+const outfit = Outfit({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-outfit",
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -24,8 +25,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${bebasNeue.variable} ${inter.variable}`}>
-      <body className="font-[family-name:var(--font-inter)]">{children}</body>
+    <html lang="en" className={`${bebasNeue.variable} ${outfit.variable}`}>
+      <body className="font-[family-name:var(--font-outfit)]">{children}</body>
     </html>
   );
 }

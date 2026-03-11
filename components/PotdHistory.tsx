@@ -2,63 +2,87 @@ import { PotdEntry } from "@/lib/types";
 
 interface PotdHistoryProps {
   history: PotdEntry[];
+  advisorMap?: Record<string, string>;
 }
 
-function getTeamColor(team: string): string {
+function teamColor(team: string): string {
   switch (team.toLowerCase()) {
-    case "titans": return "#0586FF";
-    case "stalwarts": return "#34D399";
-    case "underrated": return "#C084FC";
-    default: return "rgba(255,255,255,0.15)";
+    case "titans":    return "#3B82F6";
+    case "stalwarts": return "#10B981";
+    case "underrated":return "#A78BFA";
+    default:          return "rgba(255,255,255,0.15)";
   }
 }
 
-function getBadgeClass(team: string): string {
+function badgeClass(team: string): string {
   switch (team.toLowerCase()) {
-    case "titans": return "badge-titans";
+    case "titans":    return "badge-titans";
     case "stalwarts": return "badge-stalwarts";
-    case "underrated": return "badge-underrated";
-    default: return "bg-white/10 text-white/60";
+    case "underrated":return "badge-underrated";
+    default:          return "badge-titans";
   }
 }
 
-export default function PotdHistory({ history }: PotdHistoryProps) {
+function resolveName(p: PotdEntry, map?: Record<string, string>): string {
+  if (p.winner && !/^\d+$/.test(p.winner)) return p.winner;
+  if (map && p.tact_id && map[p.tact_id]) return map[p.tact_id];
+  if (map && p.winner && map[p.winner]) return map[p.winner];
+  return p.winner || p.tact_id || "—";
+}
+
+export default function PotdHistory({ history, advisorMap }: PotdHistoryProps) {
   if (history.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-2">
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       {history.map((p, i) => {
-        const premiumFormatted = p.premiums.toLocaleString("en-IN", { maximumFractionDigits: 0 });
-        const isNumeric = /^\d+$/.test(p.winner);
-        const displayName = isNumeric ? `Advisor #${p.winner}` : p.winner;
+        const name = resolveName(p, advisorMap);
+        const premium = p.premiums.toLocaleString("en-IN", { maximumFractionDigits: 0 });
 
         return (
           <div
             key={i}
-            className="history-row px-4 sm:px-5 py-3.5 flex items-center gap-3 sm:gap-4"
-            style={{ borderLeft: `3px solid ${getTeamColor(p.team)}` }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 16,
+              padding: "16px 20px",
+              background: "var(--color-surface)",
+              border: "1px solid var(--color-border)",
+              borderLeft: `3px solid ${teamColor(p.team)}`,
+              borderRadius: 14,
+              transition: "background 0.2s ease, border-color 0.2s ease",
+            }}
+            className="hover:!bg-[#181E34]"
           >
             {/* Date */}
-            <div className="flex-shrink-0 w-[85px]">
-              <span className="text-[12px] text-white/35 font-medium">{p.date}</span>
+            <div style={{ flexShrink: 0, width: 90 }}>
+              <span style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", fontWeight: 500 }}>
+                {p.date}
+              </span>
             </div>
 
             {/* Name */}
-            <div className="flex-1 min-w-0">
-              <span className="font-semibold text-[14px] text-white/90">{displayName}</span>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <span style={{ fontSize: 15, fontWeight: 600, color: "rgba(255,255,255,0.88)" }}>
+                {name}
+              </span>
             </div>
 
-            {/* Team badge */}
-            <div className="flex-shrink-0">
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wide ${getBadgeClass(p.team)}`}>
+            {/* Team */}
+            <div style={{ flexShrink: 0 }}>
+              <span
+                className={`${badgeClass(p.team)} rounded-md font-semibold uppercase`}
+                style={{ fontSize: 10, padding: "3px 10px", letterSpacing: "0.08em" }}
+              >
                 {p.team}
               </span>
             </div>
 
             {/* Premium */}
-            <div className="flex-shrink-0 w-[90px] text-right">
-              <span className="font-bold text-brand-gold text-[14px]">
-                &#8377;{premiumFormatted}
+            <div style={{ flexShrink: 0, width: 100, textAlign: "right" }}>
+              <span style={{ fontSize: 15, fontWeight: 700, color: "#FBBF24" }}>
+                &#8377;{premium}
               </span>
             </div>
           </div>

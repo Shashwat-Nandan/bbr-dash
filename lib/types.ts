@@ -33,4 +33,5 @@ export interface DashboardData {
   daily_totals: Record<string, number>;
   last_updated?: string;
   uploaded_by?: string;
+  advisor_map?: Record<string, string>;
 }

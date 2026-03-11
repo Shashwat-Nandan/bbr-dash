@@ -265,6 +265,12 @@ export function parseBbrExcel(buffer: Buffer): DashboardData {
     ? lastDateWithData.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
     : "N/A";
 
+  // Build advisor_map: tact_id → advisor name (for display-time resolution)
+  const advisorMap: Record<string, string> = {};
+  for (const [tactId, info] of Object.entries(advisorLookup)) {
+    if (info.name) advisorMap[tactId] = info.name;
+  }
+
   return {
     as_of_date: asOfDate,
     team_standings: teamStandings,
@@ -272,5 +278,6 @@ export function parseBbrExcel(buffer: Buffer): DashboardData {
     potd_history: potdList,
     top_performers: topPerformers,
     daily_totals: dailyTotals,
+    advisor_map: advisorMap,
   };
 }
