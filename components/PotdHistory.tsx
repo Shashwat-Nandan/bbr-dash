@@ -37,7 +37,12 @@ export default function PotdHistory({ history, advisorMap }: PotdHistoryProps) {
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       {history.map((p, i) => {
         const name = resolveName(p, advisorMap);
-        const premium = p.premiums.toLocaleString("en-IN", { maximumFractionDigits: 0 });
+        // Format: ₹2.17L for lakhs, ₹1.25Cr for crores
+        const premium = p.premiums >= 10000000
+          ? `${(p.premiums / 10000000).toFixed(2)}Cr`
+          : p.premiums >= 100000
+            ? `${(p.premiums / 100000).toFixed(2)}L`
+            : p.premiums.toLocaleString("en-IN", { maximumFractionDigits: 0 });
 
         return (
           <div
