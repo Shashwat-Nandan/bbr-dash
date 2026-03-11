@@ -1,25 +1,27 @@
-import fs from "fs";
-import path from "path";
+import { put, list } from "@vercel/blob";
 import { DashboardData } from "./types";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const DATA_FILE = path.join(DATA_DIR, "latest_data.json");
+const BLOB_FILENAME = "bbr-data/latest_data.json";
 
-export function getLatestData(): DashboardData | null {
+export async function getLatestData(): Promise<DashboardData | null> {
   try {
-    if (fs.existsSync(DATA_FILE)) {
-      const raw = fs.readFileSync(DATA_FILE, "utf-8");
-      return JSON.parse(raw) as DashboardData;
-    }
+    const { blobs } = await list({ prefix: "bbr-data/" });
+    const blob = blobs.find((b) => b.pathname === BLOB_FILENAME);
+    if (!blob) return null;
+
+    const res = await fetch(blob.url);
+    if (!res.ok) return null;
+    return (await res.json()) as DashboardData;
   } catch {
-    // ignore read errors
+    return null;
   }
-  return null;
 }
 
-export function saveData(data: DashboardData): void {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+export async function saveData(data: DashboardData): Promise<void> {
+  const json = JSON.stringify(data, null, 2);
+  await put(BLOB_FILENAME, json, {
+    access: "public",
+    addRandomSuffix: false,
+    contentType: "application/json",
+  });
 }

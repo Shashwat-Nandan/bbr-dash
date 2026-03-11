@@ -9,7 +9,7 @@ export default async function AdminPage() {
   if (!session?.user) redirect("/login");
   if (!session.user.isAdmin) redirect("/");
 
-  const data = getLatestData();
+  const data = await getLatestData();
   const lastUpdated = data?.last_updated;
 
   return (

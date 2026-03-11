@@ -16,6 +16,6 @@ out/
 node_modules/
 
 # Data (runtime storage)
-data/
+/data/
 uploads/
 .vercel

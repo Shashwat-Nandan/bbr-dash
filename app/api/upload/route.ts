@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     });
     data.uploaded_by = session.user.email;
 
-    saveData(data);
+    await saveData(data);
 
     return NextResponse.json({ success: true, message: "File uploaded and processed successfully!" });
   } catch (e) {
