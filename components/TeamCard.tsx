@@ -166,8 +166,10 @@ export default function TeamCard({ team, maxPoints }: TeamCardProps) {
         <div className="stat-block">
           <span className="stat-label">Premium</span>
           <span className="stat-value" style={{ color: "rgba(255,255,255,0.85)" }}>
-            {team.premiums_cr}
-            <span style={{ fontSize: 14, color: "rgba(255,255,255,0.3)", marginLeft: 2 }}>Cr</span>
+            {team.total_premiums >= 10000000
+              ? <>{(team.total_premiums / 10000000).toFixed(2)}<span style={{ fontSize: 14, color: "rgba(255,255,255,0.3)", marginLeft: 2 }}>Cr</span></>
+              : <>{(team.total_premiums / 100000).toFixed(1)}<span style={{ fontSize: 14, color: "rgba(255,255,255,0.3)", marginLeft: 2 }}>L</span></>
+            }
           </span>
         </div>
       </div>
