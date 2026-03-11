@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { TeamStanding } from "@/lib/types";
 
 interface TeamCardProps {
@@ -14,36 +15,11 @@ function teamColor(name: string) {
   }
 }
 
-/* Distinct SVG icon per team */
-function TeamLogo({ name, color, size = 28 }: { name: string; color: string; size?: number }) {
-  switch (name.toLowerCase()) {
-    case "titans":
-      // Lightning bolt — power, speed
-      return (
-        <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
-          <path d="M18.5 3L7 18h8l-1.5 11L26 14h-8l.5-11z" fill={color} />
-        </svg>
-      );
-    case "stalwarts":
-      // Shield — defense, reliability
-      return (
-        <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
-          <path d="M16 3L5 8v7c0 7.1 4.7 13.7 11 16 6.3-2.3 11-8.9 11-16V8L16 3z" fill={color} fillOpacity="0.2" stroke={color} strokeWidth="1.8" />
-          <path d="M13 16l2.5 2.5L20 13" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      );
-    case "underrated":
-      // Rising star — underdog, ascending
-      return (
-        <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
-          <path d="M16 4l3.5 7.5L28 13l-6 5.5L23.5 27 16 23l-7.5 4L10 18.5 4 13l8.5-1.5L16 4z" fill={color} fillOpacity="0.2" stroke={color} strokeWidth="1.5" />
-          <path d="M16 10v8M12 14l4 4 4-4" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      );
-    default:
-      return null;
-  }
-}
+const teamLogoMap: Record<string, string> = {
+  titans: "/titans-logo.png",
+  stalwarts: "/stalwarts-logo.png",
+  underrated: "/underrated-logo.png",
+};
 
 export default function TeamCard({ team, maxPoints }: TeamCardProps) {
   const isFirst = team.rank === 1;
@@ -76,7 +52,7 @@ export default function TeamCard({ team, maxPoints }: TeamCardProps) {
         <div className="flex items-start gap-4">
           {/* Team logo */}
           <div
-            className="flex-shrink-0 flex items-center justify-center rounded-2xl"
+            className="flex-shrink-0 flex items-center justify-center rounded-2xl overflow-hidden"
             style={{
               width: 56,
               height: 56,
@@ -84,7 +60,15 @@ export default function TeamCard({ team, maxPoints }: TeamCardProps) {
               border: `1px solid ${c.main}25`,
             }}
           >
-            <TeamLogo name={team.name} color={c.light} size={30} />
+            {teamLogoMap[team.name.toLowerCase()] ? (
+              <Image
+                src={teamLogoMap[team.name.toLowerCase()]}
+                alt={`${team.name} logo`}
+                width={56}
+                height={56}
+                className="object-cover"
+              />
+            ) : null}
           </div>
 
           {/* Name + rank + count */}
