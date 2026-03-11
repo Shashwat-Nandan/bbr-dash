@@ -13,7 +13,7 @@ export default function TeamCard({ team, maxPoints }: TeamCardProps) {
   return (
     <div
       className={`glass-card p-7 relative overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:border-white/30 ${
-        isFirst ? "!border-brand-gold" : ""
+        isFirst ? "!border-brand-gold card-glow-gold" : ""
       }`}
     >
       {/* Gold top line for rank 1 */}
@@ -32,11 +32,16 @@ export default function TeamCard({ team, maxPoints }: TeamCardProps) {
 
       {/* Team name */}
       <div
-        className={`font-[family-name:var(--font-bebas)] text-[28px] tracking-[2px] mb-5 ${
+        className={`font-[family-name:var(--font-bebas)] text-[28px] tracking-[2px] mb-1 ${
           isFirst ? "text-brand-gold" : ""
         }`}
       >
         {team.name}
+      </div>
+
+      {/* Advisor count */}
+      <div className="text-[11px] text-white/30 mb-5">
+        {team.considered_count} advisors considered
       </div>
 
       {/* Stats */}
