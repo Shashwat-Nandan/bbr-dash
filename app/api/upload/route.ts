@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { parseBbrExcel } from "@/lib/parse-excel";
 import { saveData } from "@/lib/data";
+import { DashboardData } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -9,20 +9,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const formData = await req.formData();
-  const file = formData.get("file") as File | null;
-
-  if (!file) {
-    return NextResponse.json({ error: "No file selected." }, { status: 400 });
-  }
-
-  if (!file.name.endsWith(".xlsx") && !file.name.endsWith(".xls")) {
-    return NextResponse.json({ error: "Please upload an Excel file (.xlsx)." }, { status: 400 });
-  }
-
   try {
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const data = parseBbrExcel(buffer);
+    const data: DashboardData = await req.json();
+
+    // Basic validation
+    if (!data.team_standings || !Array.isArray(data.team_standings)) {
+      return NextResponse.json({ error: "Invalid data format." }, { status: 400 });
+    }
 
     const now = new Date();
     data.last_updated = now.toLocaleDateString("en-GB", {
@@ -41,6 +34,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true, message: "File uploaded and processed successfully!" });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Unknown error";
-    return NextResponse.json({ error: `Error processing file: ${msg}` }, { status: 500 });
+    return NextResponse.json({ error: `Error processing data: ${msg}` }, { status: 500 });
   }
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
+import { parseBbrExcel } from "@/lib/parse-excel-client";
 
 export default function UploadForm() {
   const [fileName, setFileName] = useState<string | null>(null);
@@ -38,29 +39,37 @@ export default function UploadForm() {
     setIsUploading(true);
     setMessage(null);
 
-    const formData = new FormData();
-    formData.append("file", fileInputRef.current.files[0]);
-
     try {
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      // Parse Excel client-side
+      const file = fileInputRef.current.files[0];
+      const arrayBuffer = await file.arrayBuffer();
+      const data = parseBbrExcel(arrayBuffer);
+
+      // Send only the parsed JSON to the server
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
       const text = await res.text();
-      let data;
+      let result;
       try {
-        data = JSON.parse(text);
+        result = JSON.parse(text);
       } catch {
         setMessage({ type: "error", text: `Server error (${res.status}): ${text.substring(0, 200)}` });
         return;
       }
 
       if (res.ok) {
-        setMessage({ type: "success", text: data.message });
+        setMessage({ type: "success", text: result.message });
         setFileName(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
       } else {
-        setMessage({ type: "error", text: data.error || `Error ${res.status}` });
+        setMessage({ type: "error", text: result.error || `Error ${res.status}` });
       }
     } catch (err) {
-      setMessage({ type: "error", text: `Upload failed: ${err instanceof Error ? err.message : "Unknown error"}` });
+      setMessage({ type: "error", text: `Error: ${err instanceof Error ? err.message : "Unknown error"}` });
     } finally {
       setIsUploading(false);
     }
