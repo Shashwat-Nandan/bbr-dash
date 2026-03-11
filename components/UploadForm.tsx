@@ -43,17 +43,24 @@ export default function UploadForm() {
 
     try {
       const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json();
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        setMessage({ type: "error", text: `Server error (${res.status}): ${text.substring(0, 200)}` });
+        return;
+      }
 
       if (res.ok) {
         setMessage({ type: "success", text: data.message });
         setFileName(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
       } else {
-        setMessage({ type: "error", text: data.error });
+        setMessage({ type: "error", text: data.error || `Error ${res.status}` });
       }
-    } catch {
-      setMessage({ type: "error", text: "Upload failed. Please try again." });
+    } catch (err) {
+      setMessage({ type: "error", text: `Upload failed: ${err instanceof Error ? err.message : "Unknown error"}` });
     } finally {
       setIsUploading(false);
     }
