@@ -6,63 +6,86 @@ export default async function LoginPage() {
   if (session?.user) redirect("/");
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden"
-      style={{ background: "linear-gradient(145deg, #06080F 0%, #0A0E1A 40%, #0F1225 100%)" }}>
+    <div
+      className="min-h-screen flex items-center justify-center relative overflow-hidden"
+      style={{ background: "linear-gradient(145deg, #06080F 0%, #0A0E1A 40%, #0F1225 100%)" }}
+    >
+      {/* Background orbs */}
+      <div
+        className="fixed w-[600px] h-[600px] rounded-full blur-[160px] pointer-events-none opacity-20 -top-40 -right-40"
+        style={{ background: "#3B82F6", animation: "drift-1 24s ease-in-out infinite" }}
+      />
+      <div
+        className="fixed w-[500px] h-[500px] rounded-full blur-[140px] pointer-events-none opacity-15 -bottom-32 -left-32"
+        style={{ background: "#FBBF24", animation: "drift-2 30s ease-in-out infinite" }}
+      />
+      <div
+        className="fixed w-[350px] h-[350px] rounded-full blur-[120px] pointer-events-none opacity-10 top-1/2 left-1/3"
+        style={{ background: "#A78BFA" }}
+      />
 
-      {/* Orbs */}
-      <div className="fixed w-[600px] h-[600px] rounded-full blur-[160px] pointer-events-none opacity-20 -top-40 -right-40"
-        style={{ background: "#3B82F6", animation: "drift-1 24s ease-in-out infinite" }} />
-      <div className="fixed w-[500px] h-[500px] rounded-full blur-[140px] pointer-events-none opacity-15 -bottom-32 -left-32"
-        style={{ background: "#FBBF24", animation: "drift-2 30s ease-in-out infinite" }} />
-      <div className="fixed w-[350px] h-[350px] rounded-full blur-[120px] pointer-events-none opacity-10 top-1/2 left-1/3"
-        style={{ background: "#A78BFA" }} />
-
-      {/* Card */}
-      <div className="relative z-10 w-[90%] max-w-[460px]">
+      {/* Login card */}
+      <div className="relative z-10 w-[90%] max-w-[480px]">
         <div
-          className="rounded-3xl p-12 sm:p-14 text-center relative overflow-hidden"
+          className="rounded-3xl text-center relative overflow-hidden"
           style={{
+            padding: "56px 48px 48px",
             background: "linear-gradient(170deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.015) 100%)",
             border: "1px solid rgba(255,255,255,0.08)",
             backdropFilter: "blur(40px)",
           }}
         >
           {/* Top accent line */}
-          <div className="absolute top-0 inset-x-0 h-px"
-            style={{ background: "linear-gradient(90deg, transparent 10%, rgba(59,130,246,0.4) 50%, transparent 90%)" }} />
+          <div
+            className="absolute top-0 inset-x-0 h-px"
+            style={{ background: "linear-gradient(90deg, transparent 10%, rgba(59,130,246,0.4) 50%, transparent 90%)" }}
+          />
 
-          {/* Brand */}
-          <div className="flex items-center justify-center gap-2.5 mb-8">
+          {/* ── Brand logo ── */}
+          <div className="flex items-center justify-center gap-3" style={{ marginBottom: 40 }}>
             <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: "rgba(59,130,246,0.15)", border: "1px solid rgba(59,130,246,0.2)" }}
+              className="flex items-center justify-center rounded-xl"
+              style={{
+                width: 42,
+                height: 42,
+                background: "rgba(59,130,246,0.15)",
+                border: "1px solid rgba(59,130,246,0.2)",
+              }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                 <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#3B82F6" />
               </svg>
             </div>
-            <span className="font-[family-name:var(--font-bebas)] text-sm tracking-[3px] text-white/40 uppercase">
+            <span className="font-[family-name:var(--font-bebas)] text-[15px] tracking-[3px] text-white/40 uppercase">
               Ditto Insurance
             </span>
           </div>
 
-          {/* Title */}
-          <h1 className="font-[family-name:var(--font-bebas)] text-[58px] sm:text-[68px] tracking-[4px] leading-[0.88] mb-3">
+          {/* ── Title ── */}
+          <h1
+            className="font-[family-name:var(--font-bebas)] leading-[0.88]"
+            style={{ fontSize: "clamp(54px, 8vw, 72px)", letterSpacing: "0.1em" }}
+          >
             BLISS BATTLE
             <br />
             <span className="text-brand-gold">ROYALE</span>
           </h1>
 
-          {/* Divider */}
-          <div className="flex items-center justify-center gap-4 my-8">
+          {/* ── Divider with date ── */}
+          <div className="flex items-center justify-center gap-5" style={{ margin: "36px 0 40px" }}>
             <div className="w-16 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.12))" }} />
-            <span className="text-[11px] font-semibold tracking-[3px] uppercase text-white/20">
+            <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase" as const, color: "rgba(255,255,255,0.2)" }}>
               March 2026
             </span>
             <div className="w-16 h-px" style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.12), transparent)" }} />
           </div>
 
-          {/* CTA */}
+          {/* ── Subtitle ── */}
+          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.3)", marginBottom: 36 }}>
+            Live Competition Dashboard
+          </p>
+
+          {/* ── Sign in button ── */}
           <form
             action={async () => {
               "use server";
@@ -71,11 +94,14 @@ export default async function LoginPage() {
           >
             <button
               type="submit"
-              className="w-full max-w-[300px] inline-flex items-center justify-center gap-3 font-semibold text-[15px] px-8 py-4 rounded-2xl cursor-pointer transition-all duration-300 hover:-translate-y-0.5"
+              className="w-full max-w-[320px] inline-flex items-center justify-center gap-3 font-semibold cursor-pointer transition-all duration-300 hover:-translate-y-0.5"
               style={{
+                fontSize: 15,
+                padding: "16px 32px",
+                borderRadius: 16,
                 background: "linear-gradient(135deg, #fff 0%, #E8E8E8 100%)",
                 color: "#111",
-                boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+                boxShadow: "0 4px 24px rgba(0,0,0,0.3)",
               }}
             >
               <svg viewBox="0 0 24 24" className="w-5 h-5 flex-shrink-0">
@@ -88,8 +114,11 @@ export default async function LoginPage() {
             </button>
           </form>
 
-          <p className="mt-10 text-[12px] text-white/18">
-            Restricted to <span className="text-brand-gold/50 font-semibold">@joinditto.in</span> accounts
+          {/* ── Footer note ── */}
+          <p style={{ marginTop: 40, fontSize: 12, color: "rgba(255,255,255,0.15)" }}>
+            Access restricted to{" "}
+            <span style={{ color: "rgba(251,191,36,0.4)", fontWeight: 600 }}>@joinditto.in</span>{" "}
+            accounts
           </p>
         </div>
       </div>
