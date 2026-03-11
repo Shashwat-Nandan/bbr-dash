@@ -14,6 +14,37 @@ function teamColor(name: string) {
   }
 }
 
+/* Distinct SVG icon per team */
+function TeamLogo({ name, color, size = 28 }: { name: string; color: string; size?: number }) {
+  switch (name.toLowerCase()) {
+    case "titans":
+      // Lightning bolt — power, speed
+      return (
+        <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
+          <path d="M18.5 3L7 18h8l-1.5 11L26 14h-8l.5-11z" fill={color} />
+        </svg>
+      );
+    case "stalwarts":
+      // Shield — defense, reliability
+      return (
+        <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
+          <path d="M16 3L5 8v7c0 7.1 4.7 13.7 11 16 6.3-2.3 11-8.9 11-16V8L16 3z" fill={color} fillOpacity="0.2" stroke={color} strokeWidth="1.8" />
+          <path d="M13 16l2.5 2.5L20 13" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      );
+    case "underrated":
+      // Rising star — underdog, ascending
+      return (
+        <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
+          <path d="M16 4l3.5 7.5L28 13l-6 5.5L23.5 27 16 23l-7.5 4L10 18.5 4 13l8.5-1.5L16 4z" fill={color} fillOpacity="0.2" stroke={color} strokeWidth="1.5" />
+          <path d="M16 10v8M12 14l4 4 4-4" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+}
+
 export default function TeamCard({ team, maxPoints }: TeamCardProps) {
   const isFirst = team.rank === 1;
   const barPct = maxPoints > 0 ? Math.round((team.total_points / maxPoints) * 100) : 0;
@@ -40,46 +71,62 @@ export default function TeamCard({ team, maxPoints }: TeamCardProps) {
         }}
       />
 
-      {/* ── Header: Rank + Name ── */}
+      {/* ── Header: Logo + Name + Points ── */}
       <div className="flex items-start justify-between" style={{ marginBottom: 28 }}>
-        <div>
-          {/* Rank badge */}
+        <div className="flex items-start gap-4">
+          {/* Team logo */}
           <div
-            className="inline-flex items-center justify-center rounded-lg font-[family-name:var(--font-bebas)] text-[18px] tracking-wider"
+            className="flex-shrink-0 flex items-center justify-center rounded-2xl"
             style={{
-              width: 36,
-              height: 36,
+              width: 56,
+              height: 56,
               background: c.bg,
-              color: c.light,
-              border: `1px solid ${c.main}30`,
-              marginBottom: 12,
+              border: `1px solid ${c.main}25`,
             }}
           >
-            #{team.rank}
+            <TeamLogo name={team.name} color={c.light} size={30} />
           </div>
 
-          {/* Team name */}
-          <h3
-            className="font-[family-name:var(--font-bebas)] tracking-[2px] leading-none"
-            style={{
-              fontSize: 34,
-              color: isFirst ? "#FBBF24" : "#F1F5F9",
-            }}
-          >
-            {team.name.toUpperCase()}
-          </h3>
+          {/* Name + rank + count */}
+          <div>
+            {/* Rank pill */}
+            <div
+              className="inline-flex items-center rounded-md font-[family-name:var(--font-bebas)] tracking-wider"
+              style={{
+                fontSize: 13,
+                padding: "2px 10px",
+                color: c.light,
+                background: c.bg,
+                border: `1px solid ${c.main}25`,
+                marginBottom: 8,
+              }}
+            >
+              RANK {team.rank}
+            </div>
 
-          {/* Advisor count */}
-          <p style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", marginTop: 6 }}>
-            {team.considered_count} advisors considered
-          </p>
+            {/* Team name */}
+            <h3
+              className="font-[family-name:var(--font-bebas)] tracking-[2px] leading-none"
+              style={{
+                fontSize: 32,
+                color: isFirst ? "#FBBF24" : "#F1F5F9",
+              }}
+            >
+              {team.name.toUpperCase()}
+            </h3>
+
+            {/* Advisor count */}
+            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", marginTop: 6 }}>
+              {team.considered_count} advisors considered
+            </p>
+          </div>
         </div>
 
         {/* Total points — big number */}
-        <div className="text-right">
+        <div className="text-right flex-shrink-0">
           <div
             className="font-[family-name:var(--font-bebas)] leading-none"
-            style={{ fontSize: 52, color: c.light, letterSpacing: "0.03em" }}
+            style={{ fontSize: 48, color: c.light, letterSpacing: "0.03em" }}
           >
             {team.total_points}
           </div>
@@ -102,7 +149,6 @@ export default function TeamCard({ team, maxPoints }: TeamCardProps) {
         padding: "20px 0 0",
         borderTop: "1px solid rgba(255,255,255,0.05)",
       }}>
-        {/* Normal Points */}
         <div className="stat-block">
           <span className="stat-label">Normal</span>
           <span className="stat-value" style={{ color: "rgba(255,255,255,0.85)" }}>
@@ -110,7 +156,6 @@ export default function TeamCard({ team, maxPoints }: TeamCardProps) {
           </span>
         </div>
 
-        {/* Golden Points */}
         <div className="stat-block">
           <span className="stat-label">Golden</span>
           <span className="stat-value" style={{ color: "#FBBF24" }}>
@@ -118,7 +163,6 @@ export default function TeamCard({ team, maxPoints }: TeamCardProps) {
           </span>
         </div>
 
-        {/* Premiums */}
         <div className="stat-block">
           <span className="stat-label">Premium</span>
           <span className="stat-value" style={{ color: "rgba(255,255,255,0.85)" }}>
