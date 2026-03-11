@@ -80,6 +80,21 @@ export function parseBbrExcel(buffer: Buffer): DashboardData {
     }
   }
 
+  // --- Build advisor lookup: tact_id → { name, premiums, team } ---
+  const advisorLookup: Record<string, { name: string; premiums: number; team: string }> = {};
+  for (const teamName of TEAM_NAMES) {
+    for (const row of teamsData[teamName] || []) {
+      const tactId = str(row["TACT ID"]);
+      if (tactId) {
+        advisorLookup[tactId] = {
+          name: str(row["Advisor Name"]),
+          premiums: num(row["Premiums MTD"]),
+          team: teamName,
+        };
+      }
+    }
+  }
+
   // --- Team Standings ---
   const teamStandings: TeamStanding[] = [];
   for (const teamName of TEAM_NAMES) {
@@ -135,29 +150,42 @@ export function parseBbrExcel(buffer: Buffer): DashboardData {
   });
   teamStandings.forEach((ts, i) => { ts.rank = i + 1; });
 
-  // --- POTD ---
+  // --- POTD — resolve advisor names via lookup ---
   const potdList: PotdEntry[] = [];
   try {
     for (let i = 3; i < potdRows.length; i++) {
       const row = potdRows[i];
       if (!row) continue;
       const dateVal = row[1];
-      const winner = row[3];
-      const team = row[4];
-      const premiums = row[5];
+      const tactId = str(row[2]);
+      const rawWinner = str(row[3]);
+      const rawTeam = str(row[4]);
+      const rawPremiums = num(row[5]);
 
-      if (!winner || str(winner) === "") continue;
-      if (premiums != null && num(premiums) === 0) continue;
+      if (!rawWinner && !tactId) continue;
+
+      // Look up advisor info from team sheets
+      const lookup = tactId ? advisorLookup[tactId] : null;
+
+      // Use looked-up name if winner looks like a tact_id (all digits) or is empty
+      const isWinnerNumeric = /^\d+$/.test(rawWinner);
+      const advisorName = lookup?.name && (isWinnerNumeric || !rawWinner)
+        ? lookup.name : (rawWinner || lookup?.name || tactId);
+
+      const team = rawTeam || lookup?.team || "";
+      const premiums = rawPremiums > 0 ? rawPremiums : (lookup?.premiums || 0);
+
+      if (premiums === 0) continue;
 
       const parsed = parseDate(dateVal);
 
       potdList.push({
         date: parsed?.str || str(dateVal),
         date_sort: parsed?.sort || str(dateVal),
-        tact_id: row[2] != null ? str(row[2]) : "",
-        winner: str(winner),
-        team: str(team),
-        premiums: num(premiums),
+        tact_id: tactId,
+        winner: advisorName,
+        team,
+        premiums,
       });
     }
   } catch {
@@ -197,8 +225,7 @@ export function parseBbrExcel(buffer: Buffer): DashboardData {
   for (const key of dateColKeys) {
     const firstRow = bbrData[0][key];
     if (!(firstRow instanceof Date)) continue;
-    const dt = firstRow; // The key itself maps to the date in first row context
-    // Actually the key IS the date column header
+    const dt = firstRow;
     const dayTotal = bbrData.reduce((sum, r) => sum + num(r[key]), 0);
     if (dayTotal > 0) {
       const dateStr = dt.toLocaleDateString("en-GB", { day: "2-digit", month: "short" });
@@ -210,16 +237,12 @@ export function parseBbrExcel(buffer: Buffer): DashboardData {
   }
 
   // For date column keys that come as strings from sheet_to_json
-  // The column headers that are Date objects get serialized as strings by sheet_to_json
-  // We need a different approach - read headers directly
   if (dateColKeys.length === 0 && bbrSheet) {
     const range = XLSX.utils.decode_range(bbrSheet["!ref"] || "A1");
     for (let c = range.s.c; c <= range.e.c; c++) {
       const cell = bbrSheet[XLSX.utils.encode_cell({ r: range.s.r, c })];
       if (cell && cell.t === "d" && cell.v instanceof Date) {
         const dt = cell.v;
-        const colHeader = XLSX.utils.format_cell(cell);
-        // Sum this column across all data rows
         let dayTotal = 0;
         for (let r = range.s.r + 1; r <= range.e.r; r++) {
           const dataCell = bbrSheet[XLSX.utils.encode_cell({ r, c })];
