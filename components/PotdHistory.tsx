@@ -30,6 +30,12 @@ function resolveName(p: PotdEntry, map?: Record<string, string>): string {
   return p.winner || p.tact_id || "—";
 }
 
+function formatPremium(val: number): string {
+  if (val >= 10000000) return `${(val / 10000000).toFixed(2)}Cr`;
+  if (val >= 100000)   return `${(val / 100000).toFixed(2)}L`;
+  return val.toLocaleString("en-IN", { maximumFractionDigits: 0 });
+}
+
 export default function PotdHistory({ history, advisorMap }: PotdHistoryProps) {
   if (history.length === 0) return null;
 
@@ -37,12 +43,7 @@ export default function PotdHistory({ history, advisorMap }: PotdHistoryProps) {
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       {history.map((p, i) => {
         const name = resolveName(p, advisorMap);
-        // Format: ₹2.17L for lakhs, ₹1.25Cr for crores
-        const premium = p.premiums >= 10000000
-          ? `${(p.premiums / 10000000).toFixed(2)}Cr`
-          : p.premiums >= 100000
-            ? `${(p.premiums / 100000).toFixed(2)}L`
-            : p.premiums.toLocaleString("en-IN", { maximumFractionDigits: 0 });
+        const premium = formatPremium(p.premiums);
 
         return (
           <div
@@ -60,31 +61,31 @@ export default function PotdHistory({ history, advisorMap }: PotdHistoryProps) {
             }}
             className="hover:!bg-[#181E34]"
           >
-            {/* Date */}
-            <div style={{ flexShrink: 0, width: 90 }}>
-              <span style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", fontWeight: 500 }}>
-                {p.date}
-              </span>
-            </div>
-
-            {/* Name */}
+            {/* 1. Advisor Name — first and most prominent */}
             <div style={{ flex: 1, minWidth: 0 }}>
               <span style={{ fontSize: 15, fontWeight: 600, color: "rgba(255,255,255,0.88)" }}>
                 {name}
               </span>
             </div>
 
-            {/* Team */}
+            {/* 2. Date */}
+            <div style={{ flexShrink: 0 }}>
+              <span style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", fontWeight: 500 }}>
+                {p.date}
+              </span>
+            </div>
+
+            {/* 3. Team badge */}
             <div style={{ flexShrink: 0 }}>
               <span
                 className={`${badgeClass(p.team)} rounded-md font-semibold uppercase`}
-                style={{ fontSize: 10, padding: "3px 10px", letterSpacing: "0.08em" }}
+                style={{ fontSize: 10, padding: "3px 10px", letterSpacing: "0.08em", display: "inline-block" }}
               >
                 {p.team}
               </span>
             </div>
 
-            {/* Premium */}
+            {/* 4. Premium — last column, right-aligned */}
             <div style={{ flexShrink: 0, width: 100, textAlign: "right" }}>
               <span style={{ fontSize: 15, fontWeight: 700, color: "#FBBF24" }}>
                 &#8377;{premium}

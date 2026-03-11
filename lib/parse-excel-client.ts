@@ -167,17 +167,48 @@ export function parseBbrExcel(arrayBuffer: ArrayBuffer): DashboardData {
     ? b.total_points - a.total_points : b.total_premiums - a.total_premiums);
   teamStandings.forEach((ts, i) => { ts.rank = i + 1; });
 
-  // POTD — resolve advisor names via lookup
+  // POTD — auto-detect columns from header rows, then resolve advisor names
   const potdList: PotdEntry[] = [];
   try {
-    for (let i = 3; i < potdRows.length; i++) {
+    // Detect column indices from header rows (check first 4 rows for header keywords)
+    let colDate = -1, colTactId = -1, colName = -1, colTeam = -1, colPremium = -1;
+    let dataStartRow = 0;
+
+    for (let r = 0; r < Math.min(4, potdRows.length); r++) {
+      const row = potdRows[r];
+      if (!row) continue;
+      for (let c = 0; c < row.length; c++) {
+        const val = str(row[c]).toLowerCase();
+        if (val.includes("date") && colDate === -1) colDate = c;
+        else if ((val.includes("tact") || val.includes("id")) && !val.includes("date") && colTactId === -1) colTactId = c;
+        else if ((val.includes("name") || val.includes("winner") || val.includes("advisor")) && colName === -1) colName = c;
+        else if (val.includes("team") && colTeam === -1) colTeam = c;
+        else if ((val.includes("premium") || val.includes("amount") || val.includes("collection")) && colPremium === -1) colPremium = c;
+      }
+      // If we found at least 2 columns, this is likely the header row
+      const found = [colDate, colTactId, colName, colTeam, colPremium].filter(v => v !== -1).length;
+      if (found >= 2) { dataStartRow = r + 1; break; }
+    }
+
+    // Fallback to original hardcoded indices if detection failed
+    if (dataStartRow === 0) {
+      dataStartRow = 3;
+      if (colDate === -1) colDate = 1;
+      if (colTactId === -1) colTactId = 2;
+      if (colName === -1) colName = 3;
+      if (colTeam === -1) colTeam = 4;
+      if (colPremium === -1) colPremium = 5;
+    }
+
+    for (let i = dataStartRow; i < potdRows.length; i++) {
       const row = potdRows[i];
       if (!row) continue;
-      const dateVal = row[1];
-      const tactId = str(row[2]);
-      const rawWinner = str(row[3]);
-      const rawTeam = str(row[4]);
-      const rawPremiums = num(row[5]);
+
+      const dateVal = colDate >= 0 ? row[colDate] : null;
+      const tactId = colTactId >= 0 ? str(row[colTactId]) : "";
+      const rawWinner = colName >= 0 ? str(row[colName]) : "";
+      const rawTeam = colTeam >= 0 ? str(row[colTeam]) : "";
+      const rawPremiums = colPremium >= 0 ? num(row[colPremium]) : 0;
 
       if (!rawWinner && !tactId) continue;
 
