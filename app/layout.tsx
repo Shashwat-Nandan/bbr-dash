@@ -17,6 +17,7 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "Bliss Battle Royale — Dashboard",
   description: "BBR Live Dashboard — Ditto Insurance",
+  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({

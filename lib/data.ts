@@ -1,4 +1,4 @@
-import { put, list } from "@vercel/blob";
+import { put, list, get } from "@vercel/blob";
 import { DashboardData } from "./types";
 
 const BLOB_FILENAME = "bbr-data/latest_data.json";
@@ -9,9 +9,10 @@ export async function getLatestData(): Promise<DashboardData | null> {
     const blob = blobs.find((b) => b.pathname === BLOB_FILENAME);
     if (!blob) return null;
 
-    const res = await fetch(blob.url);
-    if (!res.ok) return null;
-    return (await res.json()) as DashboardData;
+    const result = await get(blob.url, { access: "private" });
+    if (!result || result.statusCode !== 200) return null;
+    const text = await new Response(result.stream).text();
+    return JSON.parse(text) as DashboardData;
   } catch {
     return null;
   }
@@ -20,7 +21,7 @@ export async function getLatestData(): Promise<DashboardData | null> {
 export async function saveData(data: DashboardData): Promise<void> {
   const json = JSON.stringify(data, null, 2);
   await put(BLOB_FILENAME, json, {
-    access: "public",
+    access: "private",
     addRandomSuffix: false,
     allowOverwrite: true,
     contentType: "application/json",

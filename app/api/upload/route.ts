@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
       minute: "2-digit",
       hour12: true,
     });
-    data.uploaded_by = session.user.email;
+    data.uploaded_by = "Admin";
 
     await saveData(data);
 
