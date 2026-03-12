@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import StandingsGrid from "@/components/StandingsGrid";
 import PotdHero from "@/components/PotdHero";
 import PotdHistory from "@/components/PotdHistory";
+import PurpleCapHero, { computePurpleCapLeader } from "@/components/PurpleCapHero";
 import NoData from "@/components/NoData";
 import Footer from "@/components/Footer";
 
@@ -75,7 +76,7 @@ export default async function DashboardPage() {
               }}
             />
 
-            {/* ── POTD Section ── */}
+            {/* ── Player of the Day Section ── */}
             <section style={{ marginBottom: 64 }}>
               {/* Section header */}
               <div className="flex items-center gap-4" style={{ marginBottom: 28 }}>
@@ -84,12 +85,12 @@ export default async function DashboardPage() {
                   style={{
                     width: 44,
                     height: 44,
-                    background: "rgba(167,139,250,0.1)",
-                    border: "1px solid rgba(167,139,250,0.15)",
+                    background: "rgba(251,191,36,0.1)",
+                    border: "1px solid rgba(251,191,36,0.15)",
                   }}
                 >
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2L9 9H2l5.5 4.5L5.5 22 12 17l6.5 5-2-8.5L22 9h-7L12 2z" fill="#A78BFA" />
+                    <path d="M12 2L9 9H2l5.5 4.5L5.5 22 12 17l6.5 5-2-8.5L22 9h-7L12 2z" fill="#FBBF24" />
                   </svg>
                 </div>
                 <div>
@@ -97,7 +98,7 @@ export default async function DashboardPage() {
                     className="font-[family-name:var(--font-bebas)]"
                     style={{ fontSize: 30, letterSpacing: "0.08em", lineHeight: 1 }}
                   >
-                    PURPLE PLAYER OF THE DAY
+                    PLAYER OF THE DAY
                   </h3>
                   <p style={{ fontSize: 13, color: "rgba(255,255,255,0.25)", marginTop: 4 }}>
                     Highest daily premium collector
@@ -131,6 +132,58 @@ export default async function DashboardPage() {
                 </div>
               )}
             </section>
+
+            {/* ── Purple Cap Leader Section ── */}
+            {(() => {
+              const purpleCapLeader = computePurpleCapLeader(data.potd_history, data.advisor_map);
+              if (!purpleCapLeader || purpleCapLeader.wins < 2) return null;
+              return (
+                <>
+                  {/* Divider */}
+                  <div
+                    className="mx-auto"
+                    style={{
+                      margin: "0 auto 64px",
+                      maxWidth: 600,
+                      height: 1,
+                      background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)",
+                    }}
+                  />
+
+                  <section style={{ marginBottom: 64 }}>
+                    <div className="flex items-center gap-4" style={{ marginBottom: 28 }}>
+                      <div
+                        className="flex items-center justify-center rounded-xl flex-shrink-0"
+                        style={{
+                          width: 44,
+                          height: 44,
+                          background: "rgba(167,139,250,0.1)",
+                          border: "1px solid rgba(167,139,250,0.15)",
+                        }}
+                      >
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                          <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5z" fill="#A78BFA" />
+                          <path d="M19 19H5a1 1 0 0 1 0-2h14a1 1 0 0 1 0 2z" fill="#A78BFA" opacity="0.4" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3
+                          className="font-[family-name:var(--font-bebas)]"
+                          style={{ fontSize: 30, letterSpacing: "0.08em", lineHeight: 1 }}
+                        >
+                          PURPLE CAP LEADER
+                        </h3>
+                        <p style={{ fontSize: 13, color: "rgba(255,255,255,0.25)", marginTop: 4 }}>
+                          Most Player of the Day awards this month
+                        </p>
+                      </div>
+                    </div>
+
+                    <PurpleCapHero leader={purpleCapLeader} />
+                  </section>
+                </>
+              );
+            })()}
           </>
         ) : (
           <NoData isAdmin={user.isAdmin} />

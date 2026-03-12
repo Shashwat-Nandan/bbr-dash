@@ -83,10 +83,9 @@ export default function PotdHero({ potd, advisorMap }: PotdHeroProps) {
               }}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5z" fill="#FBBF24" />
-                <path d="M19 19H5a1 1 0 0 1 0-2h14a1 1 0 0 1 0 2z" fill="#FBBF24" opacity="0.4" />
+                <path d="M12 2L9 9H2l5.5 4.5L5.5 22 12 17l6.5 5-2-8.5L22 9h-7L12 2z" fill="#FBBF24" />
               </svg>
-              Purple Cap Holder
+              Player of the Day
             </span>
           </div>
 
